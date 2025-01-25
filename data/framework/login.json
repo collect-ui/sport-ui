@@ -1,0 +1,138 @@
+{
+  "tag": "layout-fit",
+  "className": "login-page",
+  "children": [
+    {
+      "tag": "div",
+      "className": "w3l-hotair-form",
+      "children": [
+        {
+          "tag": "h1",
+          "children": "欢迎进入运动App"
+        },
+        {
+          "tag": "div",
+          "className": "container",
+          "children": [
+            {
+              "tag": "div",
+              "className": "workinghny-form-grid",
+              "children": [
+                {
+                  "tag": "div",
+                  "className": "main-hotair",
+                  "children": [
+                    {
+                      "tag": "div",
+                      "className": "content-wthree",
+                      "children": [
+                        {
+                          "tag": "h2",
+                          "children": "登 陆"
+                        },
+                        {
+                          "tag": "form",
+                          "name": "userLoginForm",
+                          "action": [
+                            {
+                              "tag": "ajax",
+                              "api": "post:/template_data/data?service=system.login",
+                              "appendFormFields": "userLoginForm"
+                            },
+                            {
+                              "tag": "redirect",
+                              "url": "/"
+                            }
+                          ],
+                          "children": [
+                            {
+                              "tag": "form-item",
+                              "name": "username",
+                              "rules": [
+                                {
+                                  "required": true,
+                                  "message": "请输入您的用户名"
+                                }
+                              ],
+                              "children": [
+                                {
+                                  "tag": "input",
+                                  "placeholder": "用户名"
+                                }
+                              ]
+                            },
+                            {
+                              "tag": "form-item",
+                              "name": "password",
+                              "rules": [
+                                {
+                                  "required": true,
+                                  "message": "请输入您的密码"
+                                }
+                              ],
+                              "children": [
+                                {
+                                  "tag": "input",
+                                  "type": "password",
+                                  "placeholder": "密码"
+                                }
+                              ]
+                            },
+                            {
+                              "tag":"form-item",
+                              "children": [
+                                {
+                                  "tag": "button",
+                                  "className": "btn",
+                                  "htmlType":"submit",
+                                  "children": "登 陆"
+                                }
+                              ]
+                            }
+
+                          ]
+                        },
+                        {
+                          "tag": "label",
+                          "children": [
+                            {
+                              "tag": "label",
+                              "children": "没有账号？"
+                            },
+                            {
+                              "tag": "a",
+                              "children":"联系管理员申请"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "tag":"div",
+                      "className": "w3l_form align-self",
+                      "children": [
+                        {
+                          "tag": "div",
+                          "className": "left_grid_info",
+                          "children": [
+                            {
+                              "tag": "img",
+                              "src": "/data/imgs/1.png",
+                              "alt":"",
+                              "className":"img-fluid"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "tag":"app",
+  "children": [
+    {
+      "tag": "layout-fit",
+      "initStore": {
+        "router":[],
+        "menu_list": [],
+        "menuShow": "top"
+      },
+      "initAction": [
+        {
+          "tag": "ajax",
+          "before_render":true,
+          "api": "post:/template_data/data?service=system.menu_query",
+          "data": {
+            "to_tree": true
+          },
+          "adapt": {
+            "menu_list": "${data}"
+          }
+        },
+        {
+          "tag": "menu2router",
+          "before_render":true,
+          "from":"menu_list",
+          "to": "router"
+        }
+      ],
+      "children": [
+        {
+          "tag": "router",
+          "basename": "/collect-ui",
+          "data_home": "/collect-ui/data",
+          "hash": true,
+          "router": "${router}"
+        }
+      ]
+    }
+  ]
+}
+

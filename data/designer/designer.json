@@ -1,0 +1,374 @@
+{
+  "tag": "layout-fit",
+  "title": "页面设计器",
+  "initStoreType": {
+    "demo": "CodePreview"
+  },
+  "initStore": {
+    "lastComponent": null,
+    "list": [
+      {
+        "code": "div",
+        "text": "div",
+        "index": 1,
+        "template": {
+          "tag": "div",
+          "children": [
+            {
+              "tag": "drop",
+              "droppableId": "test-div",
+              "style": {
+                "height": 100,
+                "border": "1px dashed #ccc",
+                "overflow": "auto"
+              },
+              "children": [
+                {
+                  "tag": "label",
+                  "children": "div"
+                }
+              ]
+            }
+
+          ]
+        }
+      },
+      {
+        "code": "h1",
+        "text": "h1",
+        "index": 2,
+        "template": {
+          "tag": "h1",
+          "children": "h1标题"
+        }
+      },
+      {
+        "code": "button",
+        "text": "button",
+        "index": 3,
+        "template": {
+          "tag": "button",
+          "children": "按钮"
+        }
+      },
+      {
+        "code": "layout-fit",
+        "text": "layout-fit",
+        "index": 4,
+        "template": {
+          "tag": "layout-fit",
+          "children": [
+            {
+              "tag": "span",
+              "children": "layout-fit布局"
+            }
+          ]
+        }
+      },
+      {
+        "code": "table",
+        "text": "表格",
+        "index": 5,
+        "template": {
+          "tag": "table",
+          "rowSelection": "multiple",
+          "style": {
+            "height": 200
+          },
+          "rowData": [
+            {
+              "username": "zz",
+              "nick": "张三",
+              "create_ldap": "1"
+            },
+            {
+              "username": "ls",
+              "nick": "李四",
+              "create_ldap": "0"
+            }
+          ],
+          "columnDefs": [
+            {
+              "headerName": "#",
+              "width": 60,
+              "suppressSizeToFit": true,
+              "valueGetter": "node.rowIndex + 1",
+              "sortable": false,
+              "pinned": "left"
+            },
+            {
+              "pinned": "left",
+              "checkboxSelection": true,
+              "headerCheckboxSelection": true,
+              "headerName": "账号",
+              "field": "username"
+            },
+            {
+              "headerName": "昵称",
+              "field": "nick"
+            },
+            {
+              "headerName": "创建LDAP",
+              "field": "create_ldap",
+              "cellRender": {
+                "tag": "icon",
+                "visible": "${row.create_ldap==='1'}",
+                "icon": "FaCheck",
+                "color": "green"
+              }
+            },
+            {
+              "headerName": "操作",
+              "field": "op",
+              "cellRender": [
+                {
+                  "tag": "button",
+                  "type": "primary",
+                  "size": "small",
+                  "children": "编辑"
+                },
+                {
+                  "tag": "button",
+                  "danger": true,
+                  "size": "small",
+                  "children": "删除",
+                  "confirm": {
+                    "title": "确认删除吗？",
+                    "description": "${'确认删除【'+row.nick+'（'+row.username+'）】记录吗？'}"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "code": "pagination",
+        "text": "分页",
+        "index": 6,
+        "template": {
+          "tag": "pagination",
+          "showSizeChanger": true,
+          "pageSize": "10",
+          "current": "1",
+          "total": "100",
+          "showTotal": true
+        }
+      },
+      {
+        "code": "input",
+        "text": "输入框",
+        "index": 7,
+        "template": {
+          "tag": "input",
+          "placeholder": "请输入"
+        }
+      },
+      {
+        "code": "form",
+        "text": "表单",
+        "index": 8
+      },
+      {
+        "code": "select",
+        "text": "下拉框",
+        "index": 9,
+        "template": {
+          "tag": "select",
+          "placeholder": "请选择状态",
+          "options": [
+            {
+              "value": "trial",
+              "label": "试用"
+            },
+            {
+              "value": "normal",
+              "label": "正式"
+            },
+            {
+              "value": "leave",
+              "label": "离职"
+            }
+          ]
+        }
+      }
+    ],
+    "demo": {
+      "props": {
+        "tag": "div"
+      },
+      "children": [
+        {
+          "props": {
+            "tag": "div"
+          },
+          "children": "test"
+        }
+      ]
+    },
+    "right": [
+      {
+        "code": "div_right",
+        "text": "div-0",
+        "index": 20
+      },
+      {
+        "code": "div_right2",
+        "text": "div-1",
+        "index": 30
+      },
+      {
+        "code": "div_right3",
+        "text": "div-2",
+        "index": 40
+      }
+    ]
+  },
+  "children": [
+    {
+      "tag": "drag-container",
+      "action": [
+        {
+          "tag": "update-store",
+          "value": {
+            "lastComponent": "${list.find(item => item.code === draggableId).template}"
+          }
+        },
+        {
+          "tag": "method",
+          "method": "${demo.addNode(lastComponent)}"
+        }
+      ],
+      "className": "h100",
+      "children": [
+        {
+          "tag": "div",
+          "className": "h100",
+          "style": {
+            "display": "flex"
+          },
+          "children": [
+            {
+              "tag": "div",
+              "style": {
+                "width": 320,
+                "backgroundColor": "#f1f1f1",
+                "borderRight": "1px solid #ddd"
+              },
+              "className": "h100",
+              "children": [
+                {
+                  "tag": "drop",
+                  "droppableId": "left-container",
+                  "style": {
+                    "display": "flex",
+                    "flexWrap": "wrap",
+                    "gap": 6,
+                    "padding": 4
+                  },
+                  "children": [
+                    {
+                      "tag": "listview",
+                      "keyField": "index",
+                      "itemData": "${list}",
+                      "itemAttr": {
+                        "tag": "drag",
+                        "index": "${row.index}",
+                        "draggableId": "${row.code}",
+                        "children": [
+                          {
+                            "tag": "div",
+                            "style": {
+                              "borderRadius": "4px",
+                              "backgroundColor": "#fff",
+                              "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.16)",
+                              "height": 40,
+                              "width": 100,
+                              "display": "flex",
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "fontSize": 20
+                            },
+                            "children": [
+                              {
+                                "tag": "label",
+                                "children": "${row.text}"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "style": {
+                "flex": 1,
+                "paddingLeft": 10,
+                "backgroundColor": "#fafafa"
+              },
+              "children": [
+
+                {
+                  "tag": "coder-preview",
+                  "coder": "${demo}"
+                },
+                {
+                  "tag": "drop",
+                  "droppableId": "test",
+                  "style": {
+                    "marginTop": 20,
+                    "height": 100,
+                    "border": "1px dashed #ccc",
+                    "overflow": "auto"
+                  },
+                  "children": [
+
+
+                  ]
+                },
+                {
+                  "tag": "drop",
+                  "droppableId": "test2",
+                  "style": {
+                    "height": 100,
+
+                    "border": "1px dashed #ccc",
+                    "overflow": "auto",
+                    "padding": 10
+                  },
+                  "children": [
+                    {
+                      "tag": "label",
+                      "children": "div2"
+                    },
+                    {
+                      "tag": "drop",
+                      "droppableId": "test3",
+                      "style": {
+                        "height": 100,
+                        "border": "1px dashed #ccc",
+                        "overflow": "auto"
+                      },
+                      "children": [
+                        {
+                          "tag": "label",
+                          "children": "div2/div3"
+                        }
+
+                      ]
+                    }
+
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
