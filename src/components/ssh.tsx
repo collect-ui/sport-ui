@@ -2,7 +2,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useRef,
+  useRef, useState,
 } from "react"
 import "xterm/css/xterm.css" // 一定要记得引入css
 import { message } from "antd"
@@ -26,7 +26,7 @@ const SSHTerminal: React.ForwardRefRenderFunction<TerminalProps, any> = (
 ) => {
   const divRef: any = useRef(null)
   let socket: any = null
-  const newProps = utils.transferProp(props, "ssh")
+  const {refName,...newProps} = utils.transferProp(props, "ssh")
   useImperativeHandle(
     ref,
     () => ({
@@ -45,6 +45,53 @@ const SSHTerminal: React.ForwardRefRenderFunction<TerminalProps, any> = (
       },
       reset() {
         terminal.reset()
+      },
+      getCurrentPath() {
+        return new Promise((resolve, reject) => {
+          let data = {
+            type: "pwd",
+            data: ""
+          };
+          socket.send(JSON.stringify(data));
+
+          // 设置超时（1秒）
+          const timeout = setTimeout(() => {
+            reject(new Error("获取路径超时"));
+            socket.removeEventListener("message", messageHandler); // 移除监听器
+          }, 1000);
+
+          // 定义监听器函数
+          const messageHandler = (msg) => {
+            let data = msg.data;
+            if (data.indexOf("<<<PWD_START>>>") >= 0 && data.indexOf("<<<PWD_END>>>") >= 0) {
+              const startMarker = "<<<PWD_START>>>";
+              const endMarker = "<<<PWD_END>>>";
+              const input = data.replace("echo '<<<PWD_START>>>'; pwd; echo '<<<PWD_END>>>';", "");
+
+              const lastStartIndex = input.lastIndexOf(startMarker);
+              const lastEndIndex = input.lastIndexOf(endMarker);
+
+              if (lastStartIndex !== -1 && lastEndIndex !== -1 && lastStartIndex < lastEndIndex) {
+                const result = input
+                    .slice(lastStartIndex + startMarker.length, lastEndIndex)
+                    .trim();
+                console.log(result); // 输出: /root
+
+                clearTimeout(timeout); // 清除超时
+                socket.removeEventListener("message", messageHandler); // 移除监听器
+                resolve(result); // 返回路径
+              } else {
+                console.log("未找到标记或标记位置不正确");
+                clearTimeout(timeout); // 清除超时
+                socket.removeEventListener("message", messageHandler); // 移除监听器
+                reject(new Error("未找到标记或标记位置不正确"));
+              }
+            }
+          };
+
+          // 绑定监听器
+          socket.addEventListener("message", messageHandler);
+        });
       },
       token: newProps.token,
     }),
@@ -65,7 +112,7 @@ const SSHTerminal: React.ForwardRefRenderFunction<TerminalProps, any> = (
   }
 
   const resize = () => {
-    if (socket.readyState !== 1) {
+    if (socket?.readyState !== 1) {
       return
     }
     let data = {
@@ -73,7 +120,7 @@ const SSHTerminal: React.ForwardRefRenderFunction<TerminalProps, any> = (
       cols: terminal.cols,
       rows: terminal.rows,
     }
-    socket.send(JSON.stringify(data))
+    socket?.send(JSON.stringify(data))
   }
 
   const initTerminal = () => {
@@ -101,8 +148,33 @@ const SSHTerminal: React.ForwardRefRenderFunction<TerminalProps, any> = (
         message.error("连接出错")
       }
       socket.onmessage = (msg: { data: string | Uint8Array }) => {
+        // let data = msg.data
+        // terminal.write(data)
         let data = msg.data
-        terminal.write(data)
+        //@ts-ignore
+        if(data.indexOf("<<<PWD_START>>>")>=0 && data.indexOf("<<<PWD_END>>>")>=0){
+          // 定义开始和结束标记
+          const startMarker = "<<<PWD_START>>>";
+          const endMarker = "<<<PWD_END>>>";
+          //@ts-ignore
+          const input = data.replace("echo '<<<PWD_START>>>'; pwd; echo '<<<PWD_END>>>';","")
+// 找到最后出现的开始标记和结束标记的位置
+          const lastStartIndex = input.lastIndexOf(startMarker);
+          const lastEndIndex = input.lastIndexOf(endMarker);
+
+// 截取标记之间的内容
+          if (lastStartIndex !== -1 && lastEndIndex !== -1 && lastStartIndex < lastEndIndex) {
+            const result = input
+                .slice(lastStartIndex + startMarker.length, lastEndIndex)
+                .trim();
+            console.log(result); // 输出: /root
+            // setPath(result)
+          } else {
+            console.log("未找到标记或标记位置不正确");
+          }
+        }else{
+          terminal.write(data)
+        }
       }
       socket.onclose = () => {
         terminal.write("\n\n连接已经关闭...")
@@ -124,7 +196,7 @@ const SSHTerminal: React.ForwardRefRenderFunction<TerminalProps, any> = (
 
     return () => {
       console.log("finish")
-      socket.close()
+      socket?.close()
       socket = null
     }
   }
@@ -133,6 +205,10 @@ const SSHTerminal: React.ForwardRefRenderFunction<TerminalProps, any> = (
     if (socket) {
       socket.close()
     }
+    // if (refName){
+    //   const store = props.store
+    //   store.setFormRef(refName,divRef)
+    // }
 
     return initTerminal()
   }, [newProps.token])

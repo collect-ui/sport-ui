@@ -60,6 +60,9 @@ setInitStoreType('CodePreview',CodePreview)
 import panelList, { ContentReference } from "./store/panel-list"
 import ssh from "./components/ssh"
 import handlerPath from "./action/handlerPath"
+import updateHistory from "./action/update-history"
+import batchShell from "./action/batch-shell"
+import UpdateCurrentPath from "./action/update-current-path"
 // 注册panelList 类型的自定义模型，解决webshell 二维数组，第二级children 不能添加的问题
 setInitStoreType("panelList", panelList)
 setInitStoreType("contentReference", ContentReference)
@@ -68,6 +71,9 @@ setInitStoreType("contentReference", ContentReference)
 setRegister("ssh", ssh)
 // 注册自定义动作
 setAction("handlerPath", handlerPath)
+setAction("update-history", updateHistory)
+setAction("batch-shell", batchShell)
+setAction("update-current-path", UpdateCurrentPath)
 
 
 import "./index.scss"
